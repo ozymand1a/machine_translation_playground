@@ -13,10 +13,10 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 
-from models.model_factory import get_model, model_init_weights
+from machine_translation.models.model_factory import get_model, model_init_weights
 from utils.utils import count_parameters
 from utils.dataset import data_train_test_split, preprocessing
-from runner.runner import Runner
+from machine_translation.runner.runner import Runner
 
 
 # set seed
@@ -74,8 +74,6 @@ TRG_PAD_IDX = TRG.vocab.stoi[TRG.pad_token]
 
 runner = Runner(
     model=model,
-    train_dataset=train_data,
-    val_dataset=val_data,
     train_iterator=train_iterator,
     val_iterator=val_iterator,
     trg_pad_idx=TRG_PAD_IDX,

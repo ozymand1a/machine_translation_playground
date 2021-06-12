@@ -3,9 +3,10 @@ model_name: seq2seq_cnn
 with_pad: True
 inversion_dataset: False
 
-logs_dir: logs
-ngpu: 0
-cuda: True
+general:
+  logs_dir: logs
+  ngpu: 0
+  cuda: True
 
 base_model:
   enc_emb_dim: 256
@@ -20,7 +21,7 @@ base_model:
   dec_dropout: 0.25
 
 checkpoint_callback:
-  mode: max
+  mode: min
   monitor: val_loss
   save_top_k: 3
   verbose: True

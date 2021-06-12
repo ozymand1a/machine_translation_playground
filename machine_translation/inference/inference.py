@@ -4,9 +4,8 @@ import random
 import argparse
 import yaml
 
-from models.model_seq2seq_lstm import Seq2SeqLSTM
 from models.model_seq2seq_gru_attention_pad_mask import Seq2SeqAttPadMask
-from utils.translation import translate_sentence, translate_sentence_with_attention
+from utils.translation import translate_sentence_with_attention
 from utils.dataset import data_train_test_split, preprocessing
 
 

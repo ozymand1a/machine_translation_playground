@@ -4,9 +4,10 @@ with_pad: False
 inversion_dataset: True
 batch_first: False
 
-logs_dir: logs
-ngpu: 0
-cuda: True
+general:
+  logs_dir: logs
+  ngpu: '0'
+  cuda: True
 
 base_model:
   enc_emb_dim: 256
@@ -26,5 +27,5 @@ checkpoint_callback:
 train_params:
   epoch_size: 10
   batch_size: 128
-  n_epochs: 20
+  n_epochs: 2
   clip: 1

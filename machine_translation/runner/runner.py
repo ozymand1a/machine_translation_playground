@@ -11,29 +11,23 @@ import torch.optim as optim
 import pytorch_lightning as pl
 
 
-class Runner(pl.LightningModule):
+class S2SRunner(pl.LightningModule):
     def __init__(self,
                  model,
-                 train_dataset,
-                 val_dataset,
                  train_iterator,
                  val_iterator,
                  trg_pad_idx,
                  clip,
                  epoch_size,
-                 batch_size,
                  with_pad,
                  ):
-        super(Runner, self).__init__()
+        super(S2SRunner, self).__init__()
         self.model = model
-        self.train_dataset = train_dataset
-        self.val_dataset = val_dataset
 
         self.train_iterator = train_iterator
         self.val_iterator = val_iterator
         self.clip = clip
         self.epoch_size = epoch_size
-        self.batch_size = batch_size
 
         self.criterion = nn.CrossEntropyLoss(ignore_index=trg_pad_idx)
 
