@@ -11,15 +11,13 @@ class Rotor():
                  model_name,
                  general_params,
                  checkpoint_callback_params,
-                 logger_params,
-                 train_params):
+                 trainer_params):
         super(Rotor).__init__()
 
         self.model_name = model_name
         self.general_params = general_params
         self.checkpoint_callback_params = checkpoint_callback_params
-        self.logger_params = logger_params
-        self.train_params = train_params
+        self.trainer_params = trainer_params
 
     def get_checkpoint_callback(self):
         checkpoint_callback = ModelCheckpoint(
@@ -44,10 +42,9 @@ class Rotor():
         trainer = Trainer(
             checkpoint_callback=checkpoint_callback,
             logger=logger,
-            gpus=[self.general_params['ngpu']] if self.general_params['cuda'] else None,
-            log_gpu_memory='all',
-            max_epochs=self.train_params['n_epochs'],
-            num_sanity_val_steps=self.train_params['batch_size']
+            gpus=self.trainer_params['gpus'],
+            max_epochs=self.trainer_params['max_epochs'],
+            num_sanity_val_steps=self.trainer_params['num_sanity_val_steps']
         )
 
         return trainer
