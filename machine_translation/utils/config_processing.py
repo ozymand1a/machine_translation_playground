@@ -6,7 +6,10 @@ import yaml
 from omegaconf import OmegaConf
 
 
-def flatten_omegaconf(d, sep='_'):
+def flatten_omegaconf(
+        d,
+        sep='_'
+):
     d = OmegaConf.to_container(d)
 
     obj = collections.OrderedDict()
@@ -29,7 +32,11 @@ def flatten_omegaconf(d, sep='_'):
     return obj
 
 
-def get_config(default="./configs/default.yaml", experiment=None, override=None):
+def get_config(
+        default="./configs/default.yaml",
+        experiment=None,
+        override=None
+):
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default=default, help="path to config (YAML file)")
     parser.add_argument("--exp", type=str, default=experiment, help="path to experiment config (YAML file)")
@@ -60,7 +67,11 @@ def get_config(default="./configs/default.yaml", experiment=None, override=None)
     return args.config, cfg, hparams
 
 
-def save_config(cfg, cfg_dir, cfg_fname):
+def save_config(
+        cfg,
+        cfg_dir,
+        cfg_fname
+):
     os.makedirs(cfg_dir, exist_ok=True)
     with open(os.path.join(cfg_dir, cfg_fname), 'w') as f:
         OmegaConf.save(config=cfg, f=f.name)

@@ -97,13 +97,11 @@ class Seq2SeqLSTM(nn.Module):
                  dec_emb_dim,
                  dec_hid_dim,
                  dec_dropout,
-                 n_layers,
-                 device):
+                 n_layers):
         super().__init__()
 
         self.encoder = Encoder(input_dim, enc_emb_dim, enc_hid_dim, n_layers, enc_dropout)
         self.decoder = Decoder(output_dim, dec_emb_dim, dec_hid_dim, n_layers, dec_dropout)
-        self.device = device
 
         assert self.encoder.hid_dim == self.decoder.hid_dim, \
             "Hidden dimensions of encoder and decoder must be equal!"
@@ -116,7 +114,7 @@ class Seq2SeqLSTM(nn.Module):
         trg_vocab_size = self.decoder.output_dim
 
         # tensor to store decoder outputs
-        outputs = torch.zeros(trg_len, batch_size, trg_vocab_size).to(self.device)
+        outputs = torch.zeros(trg_len, batch_size, trg_vocab_size)
 
         # last hidden state of the encoder is used as the initial hidden state of the decoder
         hidden, cell = self.encoder(src)

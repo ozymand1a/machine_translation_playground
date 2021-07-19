@@ -3,14 +3,19 @@
 This repository provides a set of machine translation models under
 pytorch lightning wrapping.
 
-Plan:
-- [ ] Write base pytorch-lightning pipeline
+Basic Plan:
+- [x] Write pytorch-lightning based pipeline
 - [ ] Add 6 seq2seq models
-- [ ] Rewrite torchtext dataset in a convenient manner 
+- [x] Rewrite torchtext dataset in a convenient manner 
 - [ ] Add custom dataset (not torchtext)
 - [ ] Add omegaconf support
+- [ ] Inference/translate
+- [ ] Add metrics:
+    - [ ] attention score
+    - [ ] bleu
+    - [ ] perplexity score
   
-
+Advance:
 - [ ] Write big transformer model with good quality
 - [ ] Write chatbot or another api
 - [ ] Make benchmarks
@@ -18,7 +23,7 @@ Plan:
 - [ ] Add tutorials
 - [ ] Make pretrain
 
-
+Pro:
 - [ ] Try to extend to framework
 - [ ] Add docker support
 - [ ] Use Enigma for other DS tasks

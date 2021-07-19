@@ -12,15 +12,17 @@ import pytorch_lightning as pl
 
 
 class S2SRunner(pl.LightningModule):
-    def __init__(self,
-                 model,
-                 train_iterator,
-                 val_iterator,
-                 trg_pad_idx,
-                 clip,
-                 epoch_size,
-                 with_pad,
-                 ):
+    def __init__(
+            self,
+            model,
+            train_iterator,
+            val_iterator,
+            trg_pad_idx,
+            clip,
+            epoch_size,
+            with_pad,
+            n_gpu
+    ):
         super(S2SRunner, self).__init__()
         self.model = model
 
@@ -33,11 +35,19 @@ class S2SRunner(pl.LightningModule):
 
         self.with_pad = with_pad
 
-    def forward(self, x):
-        outputs = self.model(x)
-        return outputs
+        self.n_gpu = n_gpu
 
-    def training_step(self, batch, batch_idx):
+    def forward(
+            self,
+            x
+    ):
+        return self.model(x)
+
+    def training_step(
+            self,
+            batch,
+            batch_idx
+    ):
         if self.with_pad:
             src, src_len = batch.src
             trg = batch.trg
@@ -60,13 +70,24 @@ class S2SRunner(pl.LightningModule):
         # trg = [(trg len - 1) * batch size]
         # output = [(trg len - 1) * batch size, output dim]
 
-        loss = self.criterion(output, trg)
-        torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
+        loss = self.criterion(output.to(self.n_gpu), trg)
+        # torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip)
 
-        self.logger.experiment.add_scalar('train_loss', loss, batch_idx + self.current_epoch * self.epoch_size)
+        self.log(
+            'loss',
+            loss,
+            on_step=True,
+            on_epoch=True,
+            logger=True
+        )
+
         return {'loss': loss}
 
-    def validation_step(self, batch, batch_idx):
+    def validation_step(
+            self,
+            batch,
+            batch_idx
+    ):
         if self.with_pad:
             src, src_len = batch.src
             trg = batch.trg
@@ -88,13 +109,19 @@ class S2SRunner(pl.LightningModule):
 
         # trg = [(trg len - 1) * batch size]
         # output = [(trg len - 1) * batch size, output dim]
+        loss = self.criterion(output.to(self.n_gpu), trg)
 
-        cost = self.criterion(output, trg)
+        self.log(
+            'val_loss',
+            loss
+        )
 
-        self.logger.experiment.add_scalar('cost', cost, batch_idx + self.current_epoch * self.epoch_size)
-        return {'val_loss': cost}
+        return {'val_loss': loss}
 
-    def validation_end(self, outputs):
+    def validation_epoch_end(
+            self,
+            outputs
+    ):
         avg_loss = torch.stack([x['val_loss'] for x in outputs]).mean()
         tensorboard_logs = {'val_loss': avg_loss}
 
@@ -102,11 +129,16 @@ class S2SRunner(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.model.parameters())
-        lr_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=4, verbose=True)
+        lr_scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer=optimizer,
+            mode='min',
+            factor=0.5,
+            patience=4,
+            verbose=True
+        )
+
         scheduler = {
             'scheduler': lr_scheduler,
-            'reduce_on_plateau': True,
-            # val_checkpoint_on is val_loss passed in as checkpoint_on
             'monitor': 'val_loss'
         }
         return [optimizer], [scheduler]

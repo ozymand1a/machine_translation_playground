@@ -7,35 +7,40 @@ from machine_translation.decoders.decoder_lstm import Decoder
 
 
 class Seq2SeqLSTM(nn.Module):
-    def __init__(self,
-                 input_dim,
-                 enc_emb_dim,
-                 enc_hid_dim,
-                 enc_dropout,
-                 output_dim,
-                 dec_emb_dim,
-                 dec_hid_dim,
-                 dec_dropout,
-                 n_layers,
-                 device):
+    def __init__(
+            self,
+            input_dim,
+            enc_emb_dim,
+            enc_hid_dim,
+            enc_dropout,
+            output_dim,
+            dec_emb_dim,
+            dec_hid_dim,
+            dec_dropout,
+            n_layers
+    ):
         super().__init__()
 
         self.encoder = Encoder(input_dim, enc_emb_dim, enc_hid_dim, n_layers, enc_dropout)
         self.decoder = Decoder(output_dim, dec_emb_dim, dec_hid_dim, n_layers, dec_dropout)
-        self.device = device
 
         assert self.encoder.hid_dim == self.decoder.hid_dim, \
             "Hidden dimensions of encoder and decoder must be equal!"
         assert self.encoder.n_layers == self.decoder.n_layers, \
             "Encoder and Decoder must have equal number of layers"
 
-    def forward(self, src, trg, teacher_forcing_ratio=0.5):
+    def forward(
+            self,
+            src,
+            trg,
+            teacher_forcing_ratio=0.5
+    ):
         batch_size = trg.shape[1]
         trg_len = trg.shape[0]
         trg_vocab_size = self.decoder.output_dim
 
         # tensor to store decoder outputs
-        outputs = torch.zeros(trg_len, batch_size, trg_vocab_size).to(self.device)
+        outputs = torch.zeros(trg_len, batch_size, trg_vocab_size)
         # last hidden state of the encoder is used as the initial hidden state of the decoder
         hidden, cell = self.encoder(src)
 
