@@ -76,9 +76,9 @@ class S2SRunner(pl.LightningModule):
         self.log(
             'loss',
             loss,
-            on_step=True,
-            on_epoch=True,
-            logger=True
+            # on_step=True,
+            # on_epoch=True,
+            # logger=True
         )
 
         return {'loss': loss}

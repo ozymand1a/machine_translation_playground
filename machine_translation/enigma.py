@@ -159,7 +159,7 @@ class Enigma:
 
 
 if __name__ == '__main__':
-    config = 'configs/seq2seq_lstm.yaml'
+    config = 'configs/seq2seq_gru.yaml'
     _, cfg, _ = get_config(config)
 
     enigma = Enigma(cfg)

@@ -4,12 +4,14 @@ import random
 
 
 class Encoder(nn.Module):
-    def __init__(self,
-                 input_dim,
-                 emb_dim,
-                 hid_dim,
-                 n_layers,
-                 dropout):
+    def __init__(
+            self,
+            input_dim,
+            emb_dim,
+            hid_dim,
+            n_layers,
+            dropout
+    ):
         super().__init__()
 
         self.hid_dim = hid_dim
@@ -38,12 +40,14 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self,
-                 output_dim,
-                 emb_dim,
-                 hid_dim,
-                 n_layers,
-                 dropout):
+    def __init__(
+            self,
+            output_dim,
+            emb_dim,
+            hid_dim,
+            n_layers,
+            dropout
+    ):
         super().__init__()
 
         self.output_dim = output_dim
@@ -58,7 +62,12 @@ class Decoder(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, input, hidden, cell):
+    def forward(
+            self,
+            input,
+            hidden,
+            cell
+    ):
         # input = [batch size]
         # hidden = [n layers * n directions, batch size, hid dim]
         # cell = [n layers * n directions, batch size, hid dim]

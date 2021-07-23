@@ -46,7 +46,7 @@ checkpoint_callback:
   verbose: true
 
 trainer:
-  gpus: '1' #1'
+  gpus: '3' #1'
   distributed_backend: null
   accumulate_grad_batches: 1
   profiler: false

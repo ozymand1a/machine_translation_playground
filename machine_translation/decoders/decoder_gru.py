@@ -3,7 +3,13 @@ import torch.nn as nn
 
 
 class Decoder(nn.Module):
-    def __init__(self, output_dim, emb_dim, hid_dim, dropout):
+    def __init__(
+            self,
+            output_dim,
+            emb_dim,
+            hid_dim,
+            dropout
+    ):
         super().__init__()
 
         self.hid_dim = hid_dim
@@ -15,7 +21,12 @@ class Decoder(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, input, hidden, context):
+    def forward(
+            self,
+            input,
+            hidden,
+            context
+    ):
         # input = [batch size]
         # hidden = [n layers * n directions, batch size, hid dim]
         # context = [n layers * n directions, batch size, hid dim]

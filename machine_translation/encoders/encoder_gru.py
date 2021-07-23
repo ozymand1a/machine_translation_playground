@@ -3,7 +3,13 @@ import torch.nn as nn
 
 
 class Encoder(nn.Module):
-    def __init__(self, input_dim, emb_dim, hid_dim, dropout):
+    def __init__(
+            self,
+            input_dim,
+            emb_dim,
+            hid_dim,
+            dropout
+    ):
         super().__init__()
 
         self.hid_dim = hid_dim
@@ -12,8 +18,10 @@ class Encoder(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, src):
-
+    def forward(
+            self,
+            src
+    ):
         # src = [src len, batch size]
 
         embedded = self.dropout(self.embedding(src))
