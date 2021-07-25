@@ -37,14 +37,17 @@ class TTDataset:
             tokenize=tokenize_de,
             init_token='<sos>',
             eos_token='<eos>',
-            lower=True
+            lower=True,
+            batch_first=self.data_params['batch_first'],
+            include_lengths=self.data_params['with_length']
         )
 
         TRG = Field(
             tokenize=tokenize_en,
             init_token='<sos>',
             eos_token='<eos>',
-            lower=True
+            lower=True,
+            batch_first=self.data_params['batch_first']
         )
 
         return SRC, TRG
@@ -104,10 +107,19 @@ class TTDataset:
             trg
         )
 
-        iterator_train, iterator_val, iterator_test = BucketIterator.splits(
-            (self.data_train, self.data_val, self.data_test),
-            batch_size=self.data_params['batch_size'],
-            device=self.device
-        )
+        if self.data_params['with_length']:
+            iterator_train, iterator_val, iterator_test = BucketIterator.splits(
+                (self.data_train, self.data_val, self.data_test),
+                batch_size=self.data_params['batch_size'],
+                sort_within_batch=True,
+                sort_key=lambda x: len(x.src),
+                device=self.device
+            )
+        else:
+            iterator_train, iterator_val, iterator_test = BucketIterator.splits(
+                (self.data_train, self.data_val, self.data_test),
+                batch_size=self.data_params['batch_size'],
+                device=self.device
+            )
 
         return iterator_train, iterator_val, iterator_test

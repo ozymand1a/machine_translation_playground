@@ -12,6 +12,7 @@ class Encoder(nn.Module):
             n_layers,
             kernel_size,
             dropout,
+            device,
             max_length=100
     ):
         super().__init__()
@@ -26,13 +27,20 @@ class Encoder(nn.Module):
         self.emb2hid = nn.Linear(emb_dim, hid_dim)
         self.hid2emb = nn.Linear(hid_dim, emb_dim)
 
-        self.convs = nn.ModuleList([nn.Conv1d(in_channels=hid_dim,
-                                              out_channels=2 * hid_dim,
-                                              kernel_size=kernel_size,
-                                              padding=(kernel_size - 1) // 2)
-                                    for _ in range(n_layers)])
+        self.convs = nn.ModuleList(
+            [
+                nn.Conv1d(
+                    in_channels=hid_dim,
+                    out_channels=2 * hid_dim,
+                    kernel_size=kernel_size,
+                    padding=(kernel_size - 1) // 2)
+                for _ in range(n_layers)
+            ]
+        )
 
         self.dropout = nn.Dropout(dropout)
+
+        self.device = device
 
     def forward(
             self,
@@ -44,7 +52,7 @@ class Encoder(nn.Module):
         src_len = src.shape[1]
 
         # create position tensor
-        pos = torch.arange(0, src_len).unsqueeze(0).repeat(batch_size, 1)
+        pos = torch.arange(0, src_len).unsqueeze(0).repeat(batch_size, 1).to(self.device)
 
         # pos = [0, 1, 2, 3, ..., src len - 1]
 

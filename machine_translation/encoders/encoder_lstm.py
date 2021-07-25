@@ -7,8 +7,8 @@ class Encoder(nn.Module):
             input_dim,
             emb_dim,
             hid_dim,
+            dropout,
             n_layers,
-            dropout
     ):
         super().__init__()
 
@@ -17,7 +17,7 @@ class Encoder(nn.Module):
 
         self.embedding = nn.Embedding(input_dim, emb_dim)
 
-        self.rnn = nn.LSTM(emb_dim, hid_dim, n_layers, dropout = dropout)
+        self.rnn = nn.LSTM(emb_dim, hid_dim, n_layers, dropout=dropout)
 
         self.dropout = nn.Dropout(dropout)
 

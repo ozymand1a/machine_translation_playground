@@ -4,7 +4,7 @@ from pytorch_lightning import seed_everything
 from machine_translation.utils.train_tools_preparation import Rotor
 from machine_translation.runner import S2SRunner
 from machine_translation.dataprepare import TTDataset
-from machine_translation.models.model_factory import get_model
+from machine_translation.seq2seq.model_factory import get_model
 from machine_translation.utils.config_processing import get_config
 from machine_translation.translator import Translator
 
@@ -63,14 +63,23 @@ class Enigma:
         return trg_pad_idx, src_pad_idx
 
     def build_model(
-            self
+            self,
+            src_pad_idx,
+            trg_pad_idx
     ):
         input_dim, output_dim = self.tt_dataset.get_dims()
 
         self.config_params['base_model']['input_dim'] = input_dim
         self.config_params['base_model']['output_dim'] = output_dim
 
-        model = get_model(self.config_params['model_name'], **self.config_params['base_model'])
+        model = get_model(
+            model_name=self.config_params['model_name'],
+            src_pad_idx=src_pad_idx,
+            trg_pad_idx=trg_pad_idx,
+            device=self.device,
+            **self.config_params['base_model']
+        )
+
         model = model.to(self.device)
         print(next(model.parameters()).is_cuda)
 
@@ -81,7 +90,10 @@ class Enigma:
     ):
         iterator_train, iterator_val, iterator_test = self.build_loaders()
         trg_pad_idx, src_pad_idx = self.build_pad_idxs()
-        model = self.build_model()
+        model = self.build_model(
+            src_pad_idx=src_pad_idx,
+            trg_pad_idx=trg_pad_idx
+        )
 
         runner = S2SRunner(
             model=model,
@@ -90,7 +102,8 @@ class Enigma:
             trg_pad_idx=trg_pad_idx,
             clip=self.config_params['data']['clip'],
             epoch_size=self.config_params['data']['epoch_size'],
-            with_pad=self.config_params['data']['with_pad'],
+            with_length=self.config_params['data']['with_length'],
+            with_cut=self.config_params['data']['with_cut'],
             n_gpu=self.device
         )
 
@@ -159,7 +172,7 @@ class Enigma:
 
 
 if __name__ == '__main__':
-    config = 'configs/seq2seq_gru.yaml'
+    config = 'configs/seq2seq_transformer.yaml'
     _, cfg, _ = get_config(config)
 
     enigma = Enigma(cfg)

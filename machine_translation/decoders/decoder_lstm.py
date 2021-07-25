@@ -7,8 +7,8 @@ class Decoder(nn.Module):
             output_dim,
             emb_dim,
             hid_dim,
+            dropout,
             n_layers,
-            dropout
     ):
         super().__init__()
 

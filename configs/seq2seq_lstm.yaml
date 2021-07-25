@@ -57,13 +57,15 @@ trainer:
   num_sanity_val_steps: -1
   check_val_every_n_epoch: 1
 
-seed: 13
+seed: 1234
 
 data:
   batch_size: 128
   epoch_size: 10
 
-  with_pad: false
   inversion: true
+  with_pad: false
+  with_length: false
+  with_cut: false
   batch_first: false
   clip: 1

@@ -62,7 +62,9 @@ data:
   batch_size: 128
   epoch_size: 10
 
-  with_pad: false
   inversion: false
+  with_pad: false
+  with_length: false
+  with_cut: false
   batch_first: false
   clip: 1

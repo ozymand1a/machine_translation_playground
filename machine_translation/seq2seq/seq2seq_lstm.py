@@ -21,8 +21,21 @@ class Seq2SeqLSTM(nn.Module):
     ):
         super().__init__()
 
-        self.encoder = Encoder(input_dim, enc_emb_dim, enc_hid_dim, n_layers, enc_dropout)
-        self.decoder = Decoder(output_dim, dec_emb_dim, dec_hid_dim, n_layers, dec_dropout)
+        self.encoder = Encoder(
+            input_dim=input_dim,
+            emb_dim=enc_emb_dim,
+            hid_dim=enc_hid_dim,
+            dropout=enc_dropout,
+            n_layers=n_layers,
+        )
+
+        self.decoder = Decoder(
+            output_dim=output_dim,
+            emb_dim=dec_emb_dim,
+            hid_dim=dec_hid_dim,
+            dropout=dec_dropout,
+            n_layers=n_layers
+        )
 
         assert self.encoder.hid_dim == self.decoder.hid_dim, \
             "Hidden dimensions of encoder and decoder must be equal!"
