@@ -1,12 +1,14 @@
-model_name: seq2seq_gru
+model_name: seq2seq_transformer
 
 base_model:
-  enc_emb_dim: 256
-  enc_hid_dim: 512
-  enc_dropout: 0.5
-  dec_emb_dim: 256
-  dec_hid_dim: 512
-  dec_dropout: 0.5
+  enc_hid_dim: 256
+  enc_pf_dim: 512
+  enc_dropout: 0.1
+  dec_hid_dim: 256
+  dec_pf_dim: 512
+  dec_dropout: 0.1
+  n_layers: 3
+  n_heads: 8
 
 # configure optimization
 optimization:
@@ -16,7 +18,7 @@ optimization:
   optimizer:
     path: torch.optim.AdamW
     params:
-      lr: 0.0003
+      lr: 0.0005
       betas: !!python/tuple [0.5, 0.999]
       weight_decay: 0.01
 
@@ -45,7 +47,7 @@ checkpoint_callback:
   verbose: true
 
 trainer:
-  gpus: '1' #1'
+  gpus: '3' #1'
   distributed_backend: null
   accumulate_grad_batches: 1
   profiler: false
@@ -65,6 +67,6 @@ data:
   inversion: false
   with_pad: false
   with_length: false
-  with_cut: false
-  batch_first: false
+  with_cut: true
+  batch_first: true
   clip: 1

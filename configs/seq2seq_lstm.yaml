@@ -1,13 +1,5 @@
 model_name: seq2seq_lstm
 
-with_pad: False
-inversion_dataset: True
-batch_first: False
-
-logs_dir: logs
-ngpu: 0
-cuda: True
-
 base_model:
   enc_emb_dim: 256
   enc_hid_dim: 512
@@ -17,14 +9,63 @@ base_model:
   dec_dropout: 0.5
   n_layers: 2
 
-checkpoint_callback:
-  mode: max
-  monitor: val_loss
-  save_top_k: 3
-  verbose: True
+# configure optimization
+optimization:
+  loss:
+    name: 'bce'
 
-train_params:
-  epoch_size: 10
+  optimizer:
+    path: torch.optim.AdamW
+    params:
+      lr: 0.0003
+      betas: !!python/tuple [0.5, 0.999]
+      weight_decay: 0.01
+
+  scheduler:
+    path: torch.optim.lr_scheduler.ReduceLROnPlateau
+    monitor: val_loss
+    step_size: 10
+    gamma: 0.2
+    interval: epoch
+    frequency: 1
+    strict: true
+    params:
+      factor: 0.5
+      patience: 7
+      min_lr: 1.0e-5
+      verbose: true
+
+logging:
+  save_dir: logs
+
+checkpoint_callback:
+  dirpath: weights
+  mode: min
+  monitor: val_loss
+  save_top_k: 1
+  verbose: true
+
+trainer:
+  gpus: '3' #1'
+  distributed_backend: null
+  accumulate_grad_batches: 1
+  profiler: false
+  max_epochs: 5
+  flush_logs_every_n_steps: 10
+  #  log_save_interval: 1
+  gradient_clip_val: 0.5
+  num_sanity_val_steps: -1
+  check_val_every_n_epoch: 1
+
+seed: 1234
+
+data:
   batch_size: 128
-  n_epochs: 20
+  epoch_size: 10
+
+  inversion: true
+  with_pad: false
+  with_length: false
+  with_cut: false
+  batch_first: false
   clip: 1

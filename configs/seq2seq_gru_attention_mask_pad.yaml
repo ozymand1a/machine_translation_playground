@@ -1,4 +1,4 @@
-model_name: seq2seq_gru
+model_name: seq2seq_gru_attention_mask_pad
 
 base_model:
   enc_emb_dim: 256
@@ -64,7 +64,7 @@ data:
 
   inversion: false
   with_pad: false
-  with_length: false
+  with_length: true
   with_cut: false
   batch_first: false
   clip: 1
